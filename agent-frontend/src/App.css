@@ -1,0 +1,20 @@
+/* 全局 — 白底蓝调 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #fff;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #d9d9d9; border-radius: 3px; }
+
+/* 流式光标闪烁 */
+.stream-cursor {
+  animation: blink 1s step-end infinite;
+  color: #1677ff;
+  font-weight: bold;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

@@ -1,0 +1,42 @@
+# ── 密钥文件 ──
+.env           # 含真实 API Key
+*.env          # 所有环境变量文件
+!.env.docker   # Docker 模板保留
+
+# ── Python ──
+__pycache__/
+*.pyc
+*.pyo
+venv/
+*.egg-info/
+dist/
+
+# ── Node ──
+node_modules/
+dist/
+
+# ── 数据文件 ──
+*.db
+*.db-journal
+*.db-wal
+agent-project/data/chroma_db/*
+agent-project/data/documents/*.pdf
+agent-project/data/documents/*.md
+
+# ── IDE ──
+.idea/
+.vscode/
+*.suo
+
+# ── 临时脚本 ──
+agent-project/tools/*.py
+temp/
+*.tmp
+*.log
+
+# ── 文档 ──
+*.docx
+
+# ── 操作系统 ──
+.DS_Store
+Thumbs.db

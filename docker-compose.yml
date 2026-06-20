@@ -1,0 +1,55 @@
+# ============================================
+# 智能客服工单 Agent 系统 — 一键启动
+# 用法: docker compose up -d
+# 对话: http://localhost:5173/chat
+# ============================================
+
+services:
+  # ---- 后端：FastAPI + DeepSeek ----
+  backend:
+    build:
+      context: ./agent-project
+      dockerfile: Dockerfile
+    container_name: agent-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-sk-your-key-here}
+      - DEEPSEEK_BASE_URL=${DEEPSEEK_BASE_URL:-https://api.deepseek.com/v1}
+      - DEEPSEEK_MODEL=${DEEPSEEK_MODEL:-deepseek-v4-pro}
+      - DATABASE_URL=sqlite:///data/tickets.db
+      - CHROMA_PERSIST_DIR=data/chroma_db
+      - API_PORT=8000
+      - LOG_LEVEL=INFO
+      - APP_API_KEY=${APP_API_KEY:-changeme-please-replace-this-secret}
+      - HF_ENDPOINT=https://hf-mirror.com
+      - PYTHONUNBUFFERED=1
+      - PYTHONIOENCODING=utf-8
+    volumes:
+      # SQLite + ChromaDB 持久化（容器删了数据不丢）
+      - agent_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "X-API-Key: ${APP_API_KEY:-changeme-please-replace-this-secret}", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+  # ---- 前端：React SPA (Nginx) ----
+  frontend:
+    build:
+      context: ./agent-frontend
+      dockerfile: Dockerfile
+    container_name: agent-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  # 数据卷（SQLite DB + ChromaDB 向量库）
+  agent_data:
+    driver: local

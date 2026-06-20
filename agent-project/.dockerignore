@@ -1,0 +1,31 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# 数据（用 volume 挂载，不打包进镜像）
+data/*.db
+data/chroma_db/*
+
+# 测试
+tests/
+tools/
+*.bat
+
+# 文档
+*.docx
+*.md

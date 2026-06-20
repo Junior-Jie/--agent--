@@ -111,3 +111,119 @@ npm run dev
 - `POST /api/chat` 对话
 - `GET/POST /api/tickets` 工单列表和创建
 - `PUT/DELETE /api/tickets/{id}` 编辑和关闭工单
+
+---
+
+# Smart Ticket Agent
+
+A ticket support system built with LangGraph + DeepSeek. Frontend + backend, one-click Docker launch.
+
+Written while learning agent dev. Not a commercial product, but covers the basics — chat, RAG search, ticket management, workflow, multi-turn memory.
+
+## Stack
+
+- Backend: Python 3.12 + FastAPI
+- LLM: DeepSeek V4 Pro (API calls, nothing running locally)
+- Orchestration: LangGraph StateGraph
+- Vector: ChromaDB + BM25 + RRF reranking
+- Frontend: React 18 + Ant Design 5
+- Database: SQLite (fine for single-machine)
+- Deploy: Docker Compose
+
+## Get it running
+
+### 1. Two things to prep
+
+- Docker Desktop. Install and forget.
+- A DeepSeek API key. Sign up at [platform.deepseek.com](https://platform.deepseek.com) and grab one.
+
+### 2. Set your key
+
+Open `.env`, paste your key after `DEEPSEEK_API_KEY=`.
+
+### 3. Launch
+
+Double-click `启动Docker.bat`, wait about a minute, open http://localhost:5173/chat
+
+### 4. Sign up
+
+Click top-right `登录` → `注册` to create an account, then you're good to go.
+
+### What you can do
+
+- Chat: "帮我开个工单，数据导出问题，优先级高"
+- FAQ: "忘记密码怎么办"
+- Check tickets: "有哪些工单" "查一下 TK0001"
+- Casual: "你是谁" "现在几点"
+
+The ticket panel is in the top nav. Admins can edit anyone's tickets; regular users only their own.
+
+### Accounts
+
+| user | password | role |
+|------|----------|------|
+| demo | demo123 | user |
+| admin | 123456 | admin |
+
+### Without Docker
+
+```bash
+# Backend
+cd agent-project
+pip install -r requirements.txt
+python src/api/server.py
+
+# Frontend (a second terminal)
+cd agent-frontend
+npm install
+npm run dev
+```
+
+### Common issues
+
+| symptom | cause |
+|---------|-------|
+| login failed | no users yet in a fresh system, sign up first |
+| no response | the API key in `.env` is missing or wrong |
+| blank page | backend is loading the embedding model, wait a minute |
+| Docker won't launch | Docker Desktop isn't running |
+
+## Files
+
+```
+├── agent-project/          # backend
+│   └── src/
+│       ├── api/            # FastAPI entry
+│       ├── agents/         # ChatAgent, ToolAgent, RAGAgent, Orchestrator
+│       ├── tools/          # 9 built-in tools
+│       ├── rag/            # doc loading + vector search + hybrid retrieval
+│       ├── workflow/       # state machine + ticket lifecycle
+│       ├── skills/         # PersonaSkill, TimeSkill, TicketSkill
+│       ├── mcp/            # MCP client + 2 servers
+│       ├── data/           # database + auth + conversation memory
+│       └── observability/  # tracing + dashboard
+├── agent-frontend/         # frontend
+│   └── src/pages/          # chat, login, register, tickets
+├── docker-compose.yml
+└── .env.docker
+```
+
+## How this was built
+
+21 steps from scratch, roughly covering:
+
+Project setup → Chat agent → Tool calling → Doc vectorization → RAG → Hybrid search → Intent routing → Multi-agent orchestration → Database + auth → MCP → FastAPI → Observability → Frontend → Login/register → Ticket panel → Security hardening → Conversation memory → Ticket workflow → Docker deploy → Launch script
+
+Hit plenty of bumps along the way — Windows encoding, CORS config, ChromaDB default distance, threading.local across threads, frontend array indexing, Docker registries — all noted in the project summary doc.
+
+## API
+
+Once the backend is up, check http://localhost:8000/docs for the full spec.
+
+Main endpoints:
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/chat`
+- `GET/POST /api/tickets`
+- `PUT/DELETE /api/tickets/{id}`

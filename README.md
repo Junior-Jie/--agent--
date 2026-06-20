@@ -54,37 +54,91 @@
     └── src/pages/               # ChatPage + Login + Register + Tickets
 ```
 
-## 快速开始
+## 📖 使用说明书（5 分钟上手）
 
-### Docker（推荐）
+### 你需要准备
 
-```bash
-# 1. 配置环境变量
-cp .env.docker .env
-# 编辑 .env 填入你的 DeepSeek API Key
+1. **DeepSeek API Key** — 去 [platform.deepseek.com](https://platform.deepseek.com) 注册，充值 1 块钱就够用了
+2. **Docker Desktop** — [下载地址](https://www.docker.com/products/docker-desktop/)，装好就行，不用学
 
-# 2. 启动
-双击 启动Docker.bat
-# 或
-docker compose up -d
+### 第一步：获取 API Key
 
-# 3. 访问
-http://localhost:5173/chat
+打开 [DeepSeek 开放平台](https://platform.deepseek.com) → 注册登录 → 左侧「API Keys」→ 创建新 Key → 复制下来（格式类似 `sk-xxxx`）。
+
+### 第二步：配置项目
+
+打开 `D:\MyPython code\.env` 文件（记事本就行），把第一行改成你的 Key：
+
+```
+DEEPSEEK_API_KEY=sk-你的真实Key粘贴在这里
 ```
 
-### 本地运行
+### 第三步：启动
+
+双击 `D:\MyPython code\启动Docker.bat`，等 1 分钟出现黑窗口提示完成。
+
+或者命令行：
+```bash
+cd D:\MyPython code
+docker compose up -d
+```
+
+### 第四步：开始使用
+
+浏览器打开 **http://localhost:5173/chat**
+
+#### 👤 注册账号
+
+点右上角「登录」→「注册」→ 填用户名、邮箱、密码 → 注册成功自动登录。
+
+#### 💬 跟 Agent 对话
+
+直接输入问题，比如：
+- `帮我开个工单，数据导出失败，优先级高`
+- `忘了密码怎么办`
+- `查一下所有工单`
+- `现在几点了`
+- `你是谁`
+
+Agent 会自动判断意图，调工具或查知识库。
+
+#### 📋 管理工单
+
+点顶部「工单管理」进入工单面板——可以查看、创建、编辑状态、关闭工单。
+
+#### 🔐 管理员功能
+
+用管理员账号登录可以：编辑任何人的工单、物理删除。
+
+### 停止运行
 
 ```bash
-# 后端
+docker compose down
+```
+
+### 不用 Docker？本地跑
+
+```bash
+# 终端1：后端
 cd agent-project
 pip install -r requirements.txt
 python src/api/server.py
 
-# 前端（新终端）
+# 终端2：前端
 cd agent-frontend
 npm install
 npm run dev
 ```
+
+### 常见问题
+
+| 问题 | 解决 |
+|------|------|
+| 登录提示「用户名或密码错误」 | 首次使用需要先注册账号 |
+| 对话没有反应 | 检查 `.env` 里的 API Key 对不对 |
+| Docker 启动不了 | 确保 Docker Desktop 在右下角运行中 |
+| 页面打不开 | 等 1 分钟让后端加载完 Embedding 模型 |
+| 想查看 API 文档 | 打开 http://localhost:8000/docs |
 
 ## 演示账号
 
